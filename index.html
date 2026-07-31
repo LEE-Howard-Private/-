@@ -18,59 +18,26 @@
   }
 
   :root {
-    --bg: #eef1ec;
-    --bg-raised: #e4e9e2;
-    --ink: #16241f;
-    --ink-soft: #4c5c55;
-    --ink-faint: #7c8b83;
-    --line: rgba(22,36,31,0.12);
-    --accent: #146b63;
-    --accent-strong: #0d4d47;
-    --accent-soft: rgba(20,107,99,0.12);
-    --warn: #b4552a;
-    --warn-soft: rgba(180,85,42,0.13);
-    --ok: #2f7a4f;
-    --ok-soft: rgba(47,122,79,0.13);
-    --paper: #ecdfc0;
-    --paper-line: rgba(80,60,20,0.18);
-    --paper-ink: #3b3226;
-    --shadow: 0 1px 2px rgba(22,36,31,0.06), 0 8px 24px -8px rgba(22,36,31,0.18);
-    --panel-dark-bg: #0e1a17;
+    --bg: #0d1614;
+    --bg-raised: #142320;
+    --ink: #e7efec;
+    --ink-soft: #a9bab3;
+    --ink-faint: #6f8079;
+    --line: rgba(231,239,236,0.12);
+    --accent: #3fc0b0;
+    --accent-strong: #7fdccd;
+    --accent-soft: rgba(63,192,176,0.14);
+    --warn: #e08a52;
+    --warn-soft: rgba(224,138,82,0.16);
+    --ok: #59c986;
+    --ok-soft: rgba(89,201,134,0.16);
+    --paper: #2a2318;
+    --paper-line: rgba(230,210,160,0.16);
+    --paper-ink: #e8dcc0;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -8px rgba(0,0,0,0.5);
+    --panel-dark-bg: #060b0a;
     --panel-dark-ink: #dff2ec;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1614;
-      --bg-raised: #142320;
-      --ink: #e7efec;
-      --ink-soft: #a9bab3;
-      --ink-faint: #6f8079;
-      --line: rgba(231,239,236,0.12);
-      --accent: #3fc0b0;
-      --accent-strong: #7fdccd;
-      --accent-soft: rgba(63,192,176,0.14);
-      --warn: #e08a52;
-      --warn-soft: rgba(224,138,82,0.16);
-      --ok: #59c986;
-      --ok-soft: rgba(89,201,134,0.16);
-      --paper: #2a2318;
-      --paper-line: rgba(230,210,160,0.16);
-      --paper-ink: #e8dcc0;
-      --panel-dark-bg: #060b0a;
-      --panel-dark-ink: #dff2ec;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0d1614; --bg-raised: #142320; --ink: #e7efec; --ink-soft: #a9bab3; --ink-faint: #6f8079;
-    --line: rgba(231,239,236,0.12); --accent: #3fc0b0; --accent-strong: #7fdccd; --accent-soft: rgba(63,192,176,0.14);
-    --warn: #e08a52; --warn-soft: rgba(224,138,82,0.16); --ok: #59c986; --ok-soft: rgba(89,201,134,0.16);
-    --paper: #2a2318; --paper-line: rgba(230,210,160,0.16); --paper-ink: #e8dcc0;
-  }
-  :root[data-theme="light"] {
-    --bg: #eef1ec; --bg-raised: #e4e9e2; --ink: #16241f; --ink-soft: #4c5c55; --ink-faint: #7c8b83;
-    --line: rgba(22,36,31,0.12); --accent: #146b63; --accent-strong: #0d4d47; --accent-soft: rgba(20,107,99,0.12);
-    --warn: #b4552a; --warn-soft: rgba(180,85,42,0.13); --ok: #2f7a4f; --ok-soft: rgba(47,122,79,0.13);
-    --paper: #ecdfc0; --paper-line: rgba(80,60,20,0.18); --paper-ink: #3b3226;
+    --text-scale: 1;
   }
 
   * { box-sizing: border-box; }
@@ -385,8 +352,36 @@
   .footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; }
 
   ::selection { background: var(--accent-soft); }
+
+  /* ---------- text zoom ---------- */
+  #zoom-root {
+    transform: scale(var(--tscale, 1));
+    transform-origin: top center;
+    width: calc(100% / var(--tscale, 1));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #zoom-root { transition: transform 0.15s ease; }
+  }
+  .zoom-control {
+    position: fixed; right: 20px; bottom: 20px; z-index: 60;
+    display: flex; align-items: center; gap: 2px;
+    background: var(--bg-raised); border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px; box-shadow: var(--shadow);
+  }
+  .zoom-control button {
+    font-family: inherit; font-weight: 700; font-size: 15px; line-height: 1;
+    width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
+    background: transparent; color: var(--ink); transition: background 0.15s ease;
+  }
+  .zoom-control button:hover { background: var(--accent-soft); color: var(--accent-strong); }
+  .zoom-control button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .zoom-control button:disabled { opacity: 0.35; cursor: default; background: transparent; }
+  .zoom-control #zoom-level {
+    font-size: 12px; color: var(--ink-faint); width: 40px; text-align: center; user-select: none;
+  }
 </style>
 
+<div id="zoom-root">
 <header class="site">
   <div class="site-inner">
     <div class="brand">
@@ -669,6 +664,13 @@
     <p>概念示範網站，用於說明高齡化社會下居家血壓數據串接中央醫療資料庫的構想；頁面內數據為情境示意，非真實統計或病歷。</p>
   </div>
 </footer>
+</div>
+
+<div class="zoom-control" role="group" aria-label="文字大小調整">
+  <button type="button" id="zoom-out" aria-label="縮小文字">A−</button>
+  <span id="zoom-level" class="num">100%</span>
+  <button type="button" id="zoom-in" aria-label="放大文字">A+</button>
+</div>
 
 <script>
 (function () {
@@ -836,5 +838,34 @@
       btn.textContent = cfg.buttonLabel.done;
     }, 2000);
   });
+})();
+
+(function () {
+  var MIN = 1, MAX = 3, STEP = 0.1;
+  var root = document.getElementById('zoom-root');
+  var levelEl = document.getElementById('zoom-level');
+  var outBtn = document.getElementById('zoom-out');
+  var inBtn = document.getElementById('zoom-in');
+  var stored = parseFloat(localStorage.getItem('textScale'));
+  var scale = (!isNaN(stored) && stored >= MIN && stored <= MAX) ? stored : 1;
+
+  function apply() {
+    root.style.setProperty('--tscale', scale.toFixed(2));
+    levelEl.textContent = Math.round(scale * 100) + '%';
+    outBtn.disabled = scale <= MIN + 0.001;
+    inBtn.disabled = scale >= MAX - 0.001;
+    localStorage.setItem('textScale', scale.toFixed(2));
+  }
+
+  inBtn.addEventListener('click', function () {
+    scale = Math.min(MAX, +(scale + STEP).toFixed(2));
+    apply();
+  });
+  outBtn.addEventListener('click', function () {
+    scale = Math.max(MIN, +(scale - STEP).toFixed(2));
+    apply();
+  });
+
+  apply();
 })();
 </script>
